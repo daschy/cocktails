@@ -9,6 +9,9 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+      <PackageReference Include="Polly" Version="8.4.2" />
+      <PackageReference Include="RestSharp" Version="112.1.0" />
+      <PackageReference Include="xunit.extensibility.core" Version="2.9.2" />
     </ItemGroup>
 
 </Project>
