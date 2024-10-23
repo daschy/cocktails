@@ -105,7 +105,7 @@ paths:
       tags:
         - Authentication
       summary: Authenticate user and get a token
-      operationId: ff0821f3f5e448e9be30bed07cac39a3
+      operationId: login
       requestBody:
         required: true
         content:
@@ -132,7 +132,7 @@ paths:
       tags:
         - Authentication
       summary: Logout currently authenticated user
-      operationId: 7faef09646fa779e3f4eb458d4472c75
+      operationId: logout
       responses:
         '204':
           description: Successful response
@@ -141,7 +141,7 @@ paths:
       tags:
         - Authentication
       summary: Register a new user
-      operationId: 26578afaf886b858f56e5e1b8fc3403b
+      operationId: register
       requestBody:
         required: true
         content:
@@ -175,7 +175,7 @@ paths:
       tags:
         - Authentication
       summary: Request a new user password
-      operationId: 7a6f983e087620ddd905bd4925f83983
+      operationId: requestNewPassword
       requestBody:
         required: true
         content:
@@ -197,7 +197,7 @@ paths:
       tags:
         - Authentication
       summary: Reset user password
-      operationId: 5000f083616176e5a4edc804f813aecc
+      operationId: resetPassword
       requestBody:
         required: true
         content:
@@ -230,7 +230,7 @@ paths:
       tags:
         - Authentication
       summary: Confirm user account
-      operationId: 015719985fb92cfb18e9c6a19c82b1db
+      operationId: confirmUserAccount
       parameters:
         - name: id
           in: path
@@ -274,7 +274,7 @@ paths:
       description: >-
         Show a list of bars user has access to. Includes bars that user has made
         and bars he is a member of.
-      operationId: 8e4aff1910c2f6b973c0bcff7ac77418
+      operationId: getBarList
       responses:
         '200':
           description: Successful response
@@ -293,7 +293,7 @@ paths:
       tags:
         - Bars
       summary: Create a new bar
-      operationId: af500d926f43cd1cd146adc9c46f8e41
+      operationId: createBar
       requestBody:
         required: true
         content:
@@ -337,7 +337,7 @@ paths:
       tags:
         - Bars
       summary: Show a specific bar
-      operationId: 6e92536f11339d30675019e6e93f9ce4
+      operationId: getBar
       parameters:
         - name: id
           in: path
@@ -379,7 +379,7 @@ paths:
       tags:
         - Bars
       summary: Update a bar
-      operationId: 06fb0f42934fc2cd15b00b25027494d1
+      operationId: updateBar
       parameters:
         - name: id
           in: path
@@ -433,7 +433,7 @@ paths:
       tags:
         - Bars
       summary: Delete a bar
-      operationId: dac7d15bfe40981c358d5a52c8a9e31b
+      operationId: deleteBar
       parameters:
         - name: id
           in: path
@@ -467,7 +467,7 @@ paths:
       tags:
         - Bars
       summary: Join a bar via invite code
-      operationId: 825a1e86cd76f3ca07ad2f11ea45f648
+      operationId: joinBar
       requestBody:
         required: true
         content:
@@ -513,7 +513,7 @@ paths:
       tags:
         - Bars
       summary: List all members of a bar
-      operationId: 7a49e26fb4754edae7aa107fd1e35205
+      operationId: getBarMembershipList
       parameters:
         - name: id
           in: path
@@ -555,7 +555,7 @@ paths:
       tags:
         - Bars
       summary: Leave a bar you are a member of
-      operationId: c3986ac9cf5fe6e4090b993e323480ad
+      operationId: deleteMyBarMembership
       parameters:
         - name: id
           in: path
@@ -580,7 +580,7 @@ paths:
       tags:
         - Bars
       summary: Remove a member from a bar
-      operationId: 74df840e62b14107dd9d65b49ed84b27
+      operationId: deleteUserBarMermbership
       parameters:
         - name: id
           in: path
@@ -620,7 +620,7 @@ paths:
       tags:
         - Bars
       summary: Transfer bar ownership
-      operationId: 208f8a6850027fe0ea9f3b304975fa30
+      operationId: transferBarMembership
       parameters:
         - name: id
           in: path
@@ -665,7 +665,7 @@ paths:
       tags:
         - Bars
       summary: Update bar status
-      operationId: 200c1aba9ada2cd66a7d0b7a4ec90a8e
+      operationId: updateBarStatus
       parameters:
         - name: id
           in: path
@@ -1162,7 +1162,7 @@ paths:
       tags:
         - Cocktails
       summary: Delete cocktail public link
-      operationId: a4a90713002827189fef279434f86791
+      operationId: deleteCocktailPublicLink
       parameters:
         - name: id
           in: path
@@ -1627,7 +1627,7 @@ paths:
       tags:
         - Collections
       summary: Create a new collection
-      operationId: a2c6fd135d182cbeeadbc042b35b0a80
+      operationId: createCollection
       parameters:
         - name: bar_id
           in: query
@@ -1682,7 +1682,7 @@ paths:
       tags:
         - Collections
       summary: List bar shared collections
-      operationId: a15fa7e1679d8b4eafed56112a63da76
+      operationId: getCollectionList
       parameters:
         - name: id
           in: path
@@ -2107,7 +2107,7 @@ paths:
       tags:
         - Glasses
       summary: Show a list of glass types
-      operationId: aa68a5da541be756aa65f07353e63cdf
+      operationId: getGlassList
       parameters:
         - name: bar_id
           in: query
@@ -2158,7 +2158,7 @@ paths:
       tags:
         - Glasses
       summary: Create a new glass
-      operationId: b81ce1bc5d5988d9221774a715a90950
+      operationId: createGlass
       parameters:
         - name: bar_id
           in: query
@@ -2213,7 +2213,7 @@ paths:
       tags:
         - Glasses
       summary: Show glass
-      operationId: aca8ea95b45a17cfe2a0442cde2f53ad
+      operationId: getGlass
       parameters:
         - name: id
           in: path
@@ -2510,7 +2510,7 @@ paths:
       tags:
         - Images
       summary: Update image
-      operationId: 18a765565c4f43cc01167738ab8ff7cd
+      operationId: updateImage
       parameters:
         - name: id
           in: path
@@ -2549,7 +2549,7 @@ paths:
       tags:
         - Images
       summary: Delete image
-      operationId: 99a6b84660d0881a68e57435afb2e6ea
+      operationId: deleteImage
       parameters:
         - name: id
           in: path
@@ -2583,7 +2583,7 @@ paths:
       tags:
         - Images
       summary: Get a thumbnail of an image
-      operationId: f3fac097ef10296417650431b970d7b3
+      operationId: GetImageThumbnail
       parameters:
         - name: id
           in: path
@@ -2614,7 +2614,7 @@ paths:
       tags:
         - Import
       summary: Import from recipe schema
-      operationId: f46bb44c14109f5d529b854e81d57150
+      operationId: ImportCocktail
       parameters:
         - name: bar_id
           in: query
@@ -2676,7 +2676,7 @@ paths:
         Try to scrape a recipe from a website. Most of the well known recipe
         websites should work. Data returned is a valid JSON schema that you can
         import using import cocktail endpoint.
-      operationId: 33b756be1976d85e9b0e8e734beed74f
+      operationId: scrapeRecipe
       parameters:
         - name: bar_id
           in: query
@@ -3085,7 +3085,7 @@ paths:
       tags:
         - Ingredient category
       summary: Create a new ingredient category
-      operationId: beef561152a333f7c81fec58a7590f37
+      operationId: createIngredientCategory
       parameters:
         - name: bar_id
           in: query
@@ -3182,7 +3182,7 @@ paths:
       tags:
         - Ingredient category
       summary: Update ingredient category
-      operationId: bdd96c56bc078a0dbdbc9cb71b1bd503
+      operationId: updateIngredientCategory
       parameters:
         - name: id
           in: path
@@ -3637,7 +3637,7 @@ paths:
       tags:
         - Ingredients
       summary: List of cocktails that use this ingredient
-      operationId: aba5fae0baf2ce1fc02a691412c8a6ab
+      operationId: getCocktailListByIngredient
       parameters:
         - name: id
           in: path
@@ -3840,7 +3840,7 @@ paths:
       tags:
         - Menu
       summary: Show menu
-      operationId: 15005db445c5ccad445e198729cc4e22
+      operationId: getMenu
       parameters:
         - name: bar_id
           in: query
@@ -3883,7 +3883,7 @@ paths:
       tags:
         - Menu
       summary: Update menu
-      operationId: 9ac6e03b541a1351a5d691b2aa232283
+      operationId: updateMenu
       parameters:
         - name: bar_id
           in: query
@@ -4043,7 +4043,7 @@ paths:
       tags:
         - Notes
       summary: Create a new note
-      operationId: a0c90a217efa521e80b3b94c1a4bf3a7
+      operationId: createNote
       requestBody:
         required: true
         content:
@@ -4623,7 +4623,7 @@ paths:
         - 'Users: Shelf'
       summary: Show a list of shelf ingredients
       description: Ingredients that user saved to their shelf
-      operationId: b34236369b075eabaacef013be799024
+      operationId: getIngredientListOnShelf
       parameters:
         - name: id
           in: path
@@ -5696,7 +5696,7 @@ paths:
       tags:
         - Users
       summary: Create a new user
-      operationId: a53b4f22b9e0de280870f1e187f6bee3
+      operationId: createUser
       parameters:
         - name: bar_id
           in: query
