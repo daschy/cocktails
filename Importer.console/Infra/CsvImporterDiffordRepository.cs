@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Importer.console.Infra;
 
-public class ImporterDiffordRepository : IImporterDiffordRepository
+public class CsvImporterDiffordRepository : ICsvImporterDiffordRepository
 {
     public IList<DiffordCocktailRecipe> readFromFile(string path)
     {

@@ -53,34 +53,35 @@ public class BarAssistantRepository : IBarAssistantRepository
 
     public CocktailRecipeDraft02Recipe ScrapeCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
     {
-        if (!string.IsNullOrEmpty(Token))
+        if (string.IsNullOrEmpty(Token))
         {
-            var apiInstance = new ImportApi(_config);
-            var scrapeRecipeRequest = new ScrapeRecipeRequest(recipeUrl); // ScrapeRecipeRequest | 
-            var
-                _barId = barId; // int? | Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header. (optional) 
-            var _barAssistantBarId =
-                barAssistantBarId; // int? | Database id of a bar. Required if you are not using `bar_id` query string. (optional) 
-
-            try
-            {
-                // Scrape a recipe
-                ScrapeRecipe200Response result =
-                    apiInstance.ScrapeRecipe(scrapeRecipeRequest, _barId, _barAssistantBarId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException e)
-            {
-                Debug.Print("Exception when calling ImportApi.ScrapeRecipe: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
+            throw new ConstraintException("Token is empty");
         }
+        
+        var apiInstance = new ImportApi(_config);
+        var scrapeRecipeRequest = new ScrapeRecipeRequest(recipeUrl); // ScrapeRecipeRequest | 
+        var
+            _barId = barId; // int? | Database id of a bar. Required if you are not using `Bar-Assistant-Bar-Id` header. (optional) 
+        var _barAssistantBarId =
+            barAssistantBarId; // int? | Database id of a bar. Required if you are not using `bar_id` query string. (optional) 
 
-        throw new ConstraintException("Token is empty");
+        try
+        {
+            // Scrape a recipe
+            ScrapeRecipe200Response result =
+                apiInstance.ScrapeRecipe(scrapeRecipeRequest, _barId, _barAssistantBarId);
+            Debug.WriteLine(result);
+            return result.Data.Schema
+        }
+        catch (ApiException e)
+        {
+            Debug.Print("Exception when calling ImportApi.ScrapeRecipe: " + e.Message);
+            Debug.Print("Status Code: " + e.ErrorCode);
+            Debug.Print(e.StackTrace);
+        }
     }
 
-    public CocktailRecipe ImportCocktailRecipe(CocktailRecipeDraft02Recipe recipeDraft,
+    public Cocktail ImportCocktailRecipe(CocktailRecipeDraft02Recipe recipeDraft,
         DiffordCocktailRecipe additionalData)
     {
         throw new NotImplementedException();
