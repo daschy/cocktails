@@ -28,7 +28,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="data\difford_cocktail_mojito.json" CopyToOutputDirectory="Always"/>
+        <None Include="data\difford_mojito-cocktail.json" CopyToOutputDirectory="Always"/>
+        <None Update="data\scraped_mojito-cocktail.json" CopyToOutputDirectory="Always"/>
     </ItemGroup>
 
 </Project>

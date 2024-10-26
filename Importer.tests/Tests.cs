@@ -15,7 +15,7 @@ public class Tests
     [Test]
     public void test_read_cocktail_from_difford_json()
     {
-        var diffordRepo = new CsvImporterDiffordRepository();
+        var diffordRepo = new JSONImporterDiffordRepository();
         IEnumerable<DiffordCocktailRecipe> recipeList = diffordRepo.readFromFile("data/difford_cocktail_mojito.json");
         Assert.IsNotEmpty(recipeList);
     }
