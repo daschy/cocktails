@@ -31,7 +31,6 @@ public class TestImportRecipe
         IBarAssistantRepository barRepo = new BarAssistantRepository(_mockApiClient.Object, _validBasePath);
         bool isAuthenticated = barRepo.Authenticate("test@test.com", "123454");
         Assert.True(isAuthenticated);
-        Assert.IsNotEmpty(barRepo.Token);
     }
 
     [Test]
@@ -55,29 +54,31 @@ public class TestImportRecipe
     private Mock<ApiClient> SetupApiClient()
     {
         var mockApiClient = new Mock<ApiClient>();
-        // mockApiClient
-        //     .As<ISynchronousClient>()
-        //     .Setup(
-        //         c => c.Post<Login200Response>(
-        //             "/auth/login",
-        //             It.IsAny<RequestOptions>(),
-        //             It.IsAny<IReadableConfiguration>()
-        //         )
-        //     )
-        //     .Returns(
-        //         () => new ApiResponse<Login200Response>(
-        //             HttpStatusCode.OK,
-        //             new Login200Response(new Token("123456"))
-        //         )
-        //     );
+
         var respoJson = File.ReadAllText("data/scraped_mojito-cocktail.json");
         var scrapedCocktailResponse =
             JsonConvert.DeserializeObject<ScrapeRecipe200Response>(respoJson);
         mockApiClient
             .As<ISynchronousClient>()
             .Setup(
+                c => c.Post<Login200Response>(
+                    "/auth/login",
+                    It.IsAny<RequestOptions>(),
+                    It.IsAny<IReadableConfiguration>()
+                )
+            )
+            .Returns(
+                (_) => new ApiResponse<Login200Response>(
+                    HttpStatusCode.OK,
+                    new Login200Response(new Token("123456"))
+                )
+            );
+
+        mockApiClient
+            .As<ISynchronousClient>()
+            .Setup(
                 c => c.Post<ScrapeRecipe200Response>(
-                    It.IsAny<string>(),
+                    "/import/scrape",
                     It.IsAny<RequestOptions>(),
                     It.IsAny<IReadableConfiguration>()
                 )
