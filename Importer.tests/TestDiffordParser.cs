@@ -4,8 +4,7 @@ using Importer.console.Infra;
 
 namespace Importer.test;
 
-[Ignore("not relevant")]
-public class Tests
+public class TestDifford
 {
     [SetUp]
     public void Setup()
@@ -16,7 +15,7 @@ public class Tests
     public void test_read_cocktail_from_difford_json()
     {
         var diffordRepo = new JSONImporterDiffordRepository();
-        IEnumerable<DiffordCocktailRecipe> recipeList = diffordRepo.readFromFile("data/difford_cocktail_mojito.json");
+        IEnumerable<DiffordCocktailRecipe> recipeList = diffordRepo.readFromFile("data/difford_mojito-cocktail.json");
         Assert.IsNotEmpty(recipeList);
     }
 
