@@ -6,7 +6,9 @@ namespace Importer.test;
 
 public interface IBarAssistantRepository
 {
-    bool Authenticate(string testTestCom, string s);
-    CocktailRecipeDraft02 ScrapeCocktailRecipe(string httpServerCom, int barId, int barAssistantBarId);
-    Cocktail ImportCocktailRecipe(CocktailRecipeDraft02 recipeDraft, DiffordCocktailRecipe additionalData);
+    void Authenticate(string testTestCom, string s);
+    DCocktailDraft ScrapeDraftCocktailRecipe(string httpServerCom, int barId, int barAssistantBarId);
+    DCocktail ImportCocktailRecipe(DCocktailDraft recipeDraft, DiffordCocktailRecipe additionalData);
+
+    bool IsAuthenticated();
 }

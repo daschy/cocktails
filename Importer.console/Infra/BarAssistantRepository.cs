@@ -8,35 +8,19 @@ using Infra.BarAssistant.Gen.Model;
 
 namespace Importer.console.Infra;
 
-public class BarAssistantRepository : IBarAssistantRepository
+public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi importApi) : IBarAssistantRepository
 {
-    private readonly ApiClient _client;
-    private readonly Configuration _config;
+    private string? _accessToken;
 
-    public BarAssistantRepository(ApiClient client, string basePath)
+    public void Authenticate(string email, string pwd)
     {
-        _client = client;
-        _config = new Configuration()
-        {
-            BasePath = basePath
-        };
-    }
-    
-    public bool Authenticate(string email, string pwd)
-    {
-        var apiInstance = new AuthenticationApi(
-            _client,
-            _client,
-            _config);
         var loginRequest = new LoginRequest(email, password: pwd);
-
         try
         {
             // Authenticate user and get a token
-            Login200Response result = apiInstance.Login(loginRequest);
-            _config.AccessToken = result.Data.VarToken;
+            Login200Response result = authApi.Login(loginRequest);
+            _accessToken = result.Data.VarToken;
             Debug.WriteLine(result);
-            return true;
         }
         catch (ApiException e)
         {
@@ -47,23 +31,21 @@ public class BarAssistantRepository : IBarAssistantRepository
         }
     }
 
-    public CocktailRecipeDraft02 ScrapeCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
+    public DCocktailDraft ScrapeDraftCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
     {
-        if (string.IsNullOrEmpty(_config.AccessToken))
+        if (IsAuthenticated())
         {
             throw new ConstraintException("Token is empty");
         }
 
-        var apiInstance = new ImportApi(_config);
-        var scrapeRecipeRequest = new ScrapeRecipeRequest(recipeUrl); // ScrapeRecipeRequest | 
-
+        var scrapeRecipeRequest = new ScrapeRecipeRequest(recipeUrl);
         try
         {
             // Scrape a recipe
             ScrapeRecipe200Response result =
-                apiInstance.ScrapeRecipe(scrapeRecipeRequest, barId, barAssistantBarId);
+                importApi.ScrapeRecipe(scrapeRecipeRequest, barId, barAssistantBarId);
             Debug.WriteLine(result);
-            return result.Data.Schema;
+            return (DCocktailDraft)result.Data.Schema;
         }
         catch (ApiException e)
         {
@@ -74,9 +56,20 @@ public class BarAssistantRepository : IBarAssistantRepository
         }
     }
 
-    public Cocktail ImportCocktailRecipe(CocktailRecipeDraft02 recipeDraft,
+    public DCocktail ImportCocktailRecipe(DCocktailDraft recipeDraft,
         DiffordCocktailRecipe additionalData)
     {
+        if (IsAuthenticated())
+        {
+            throw new ConstraintException("Token is empty");
+        }
+
+
         throw new NotImplementedException();
+    }
+
+    public bool IsAuthenticated()
+    {
+        return !string.IsNullOrEmpty(_accessToken);
     }
 }

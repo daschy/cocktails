@@ -5,9 +5,9 @@ namespace Importer.console.Infra;
 
 public class MapperStringToIngredientList
 {
-    public static List<Ingredient> ParseIngredients(string input)
+    public static List<DIngredient> ParseIngredients(string input)
     {
-        var ingredients = new List<Ingredient>();
+        var ingredients = new List<DIngredient>();
         var unitMappings = new Dictionary<string, Unit>
         {
             { "shot", Unit.shot },
@@ -46,7 +46,7 @@ public class MapperStringToIngredientList
                     }
                 }
 
-                var ingredient = new Ingredient(nameText, quantity, unit, notes);
+                var ingredient = new DIngredient(nameText, quantity, unit, notes);
                 ingredients.Add(ingredient);
             }
         }
@@ -54,9 +54,9 @@ public class MapperStringToIngredientList
         return ingredients;
     }
 
-    public static IEnumerable<Ingredient> Map(string input)
+    public static IEnumerable<DIngredient> Map(string input)
     {
-        var ingredients = new List<Ingredient>();
+        var ingredients = new List<DIngredient>();
         var unitMappings = new Dictionary<string, Unit>
         {
             { "shot", Unit.shot },

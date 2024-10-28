@@ -2,9 +2,11 @@ using System.Net;
 using System.Text.Json.Nodes;
 using Importer.console.Domain;
 using Importer.console.Infra;
+using Infra.BarAssistant.Gen.Api;
 using Infra.BarAssistant.Gen.Client;
 using Infra.BarAssistant.Gen.Model;
 using Moq;
+using Moq.Language.Flow;
 using Newtonsoft.Json;
 
 namespace Importer.test;
@@ -15,11 +17,13 @@ public class TestImportRecipe
     private string _validUserEmail;
     private string _validPassword;
     private string _validBasePath;
+    private Mock<IAuthenticationApi> _mockAuthApiOk;
+    private Mock<IImportApi> _mockImportApiOk;
 
     [SetUp]
     public void Setup()
     {
-        _mockApiClient = SetupApiClient();
+        SetupApis();
         _validUserEmail = "test@test.com";
         _validPassword = "123454";
         _validBasePath = "http://localhost:8000/api";
@@ -28,67 +32,58 @@ public class TestImportRecipe
     [Test]
     public void test_login()
     {
-        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockApiClient.Object, _validBasePath);
-        bool isAuthenticated = barRepo.Authenticate("test@test.com", "123454");
-        Assert.True(isAuthenticated);
+        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
+        barRepo.Authenticate("test@test.com", "123454");
+        Assert.True(barRepo.IsAuthenticated());
     }
 
     [Test]
     public void test_import_recipe()
     {
-        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockApiClient.Object, _validBasePath);
+        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
         barRepo.Authenticate(_validUserEmail, _validPassword);
-        IJSONImporterDiffordRepository diffordRepository = new JSONImporterDiffordRepository();
+        var diffordRepository = new JSONImporterDiffordRepository();
         var recipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
         foreach (var diffordCocktailRecipe in recipeList)
         {
-            CocktailRecipeDraft02 recipeDraft = barRepo.ScrapeCocktailRecipe("http://server.com/12314", 1, 1);
-            Cocktail recipe = barRepo.ImportCocktailRecipe(
+            DCocktailDraft recipeDraft = barRepo.ScrapeDraftCocktailRecipe("http://server.com/12314", 1, 1);
+            DCocktail importedRecipe = barRepo.ImportCocktailRecipe(
                 recipeDraft,
                 additionalData: diffordCocktailRecipe
             );
-            Assert.IsNull(recipe.Instructions);
+            Assert.That(importedRecipe.Instructions, Is.EqualTo(diffordCocktailRecipe.Preparation));
+            foreach (var (ingredient, i) in importedRecipe.Ingredients.Select((v, i) => (v, i)))
+            {
+                Assert.That(ingredient.Note, Is.EqualTo(diffordCocktailRecipe.Ingredients));
+            }
         }
     }
 
-    private Mock<ApiClient> SetupApiClient()
+    private void SetupApis()
     {
-        var mockApiClient = new Mock<ApiClient>();
+        _mockAuthApiOk = new Mock<IAuthenticationApi>();
+        _mockAuthApiOk.Setup(
+                c => c.Login(
+                    It.IsAny<LoginRequest>(),
+                    It.IsAny<int>()
+                )
+            )
+            .Returns(
+                () => new Login200Response(new Token("1234"))
+            );
 
         var respoJson = File.ReadAllText("data/scraped_mojito-cocktail.json");
         var scrapedCocktailResponse =
-            JsonConvert.DeserializeObject<ScrapeRecipe200Response>(respoJson);
-        mockApiClient
-            .As<ISynchronousClient>()
-            .Setup(
-                c => c.Post<Login200Response>(
-                    "/auth/login",
-                    It.IsAny<RequestOptions>(),
-                    It.IsAny<IReadableConfiguration>()
-                )
-            )
-            .Returns(
-                (_) => new ApiResponse<Login200Response>(
-                    HttpStatusCode.OK,
-                    new Login200Response(new Token("123456"))
-                )
-            );
+            JsonConvert.DeserializeObject<ScrapeRecipe200Response>(respoJson) ?? new ScrapeRecipe200Response();
 
-        mockApiClient
-            .As<ISynchronousClient>()
-            .Setup(
-                c => c.Post<ScrapeRecipe200Response>(
-                    "/import/scrape",
-                    It.IsAny<RequestOptions>(),
-                    It.IsAny<IReadableConfiguration>()
-                )
+        _mockImportApiOk = new Mock<IImportApi>();
+        _mockImportApiOk.Setup(
+            c => c.ScrapeRecipe(
+                It.IsAny<ScrapeRecipeRequest>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>()
             )
-            .Returns(
-                () => new ApiResponse<ScrapeRecipe200Response>(
-                    HttpStatusCode.OK,
-                    scrapedCocktailResponse
-                )
-            );
-        return mockApiClient;
+        ).Returns(() => scrapedCocktailResponse);
     }
 }
