@@ -1,6 +1,6 @@
 namespace Importer.console.Domain;
 
-public enum Unit
+public enum DUnit
 {
     none,
     oz,
