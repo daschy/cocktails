@@ -14,8 +14,8 @@ public class TestDiffordParser
     [Test]
     public void test_read_cocktail_from_difford_json()
     {
-        var diffordRepo = new JSONImporterDiffordRepository();
-        IEnumerable<DiffordCocktailRecipe> recipeList = diffordRepo.readFromFile("data/difford_mojito-cocktail.json");
+        var diffordRepo = new JsonImporterDiffordRepository();
+        IEnumerable<DiffordCocktailRecipe>? recipeList = diffordRepo.readFromFile("data/difford_mojito-cocktail.json");
         Assert.IsNotEmpty(recipeList);
     }
 
@@ -54,8 +54,8 @@ public class TestDiffordParser
         var ingredientList = MapperStringToIngredientList.ParseIngredients(ingredientStr);
         Assert.IsNotEmpty(ingredientList);
         Assert.IsTrue(numberOfIngredients == ingredientList.Count());
-        Assert.That(ingredientList.Select((ing) => ing.quantity), Is.EquivalentTo(quantities));
-        Assert.That(ingredientList.Select((ing) => ing.name), Is.EquivalentTo(names));
-        Assert.That(ingredientList.Select((ing) => ing.notes), Is.EquivalentTo(notes));
+        Assert.That(ingredientList.Select((ing) => ing.Quantity), Is.EquivalentTo(quantities));
+        Assert.That(ingredientList.Select((ing) => ing.Name), Is.EquivalentTo(names));
+        Assert.That(ingredientList.Select((ing) => ing.Notes), Is.EquivalentTo(notes));
     }
 }

@@ -42,7 +42,7 @@ public class TestImportRecipe
     {
         IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
         barRepo.Authenticate(_validUserEmail, _validPassword);
-        var diffordRepository = new JSONImporterDiffordRepository();
+        var diffordRepository = new JsonImporterDiffordRepository();
         var recipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
         foreach (var diffordCocktailRecipe in recipeList)
         {
@@ -55,6 +55,7 @@ public class TestImportRecipe
             foreach (var (ingredient, i) in importedRecipe.Ingredients.Select((v, i) => (v, i)))
             {
                 Assert.That(ingredient.Note, Is.EqualTo(diffordCocktailRecipe.Ingredients));
+                
             }
         }
     }

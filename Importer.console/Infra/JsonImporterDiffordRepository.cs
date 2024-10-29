@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Importer.console.Infra;
 
-public class IjsonImporterDiffordRepository : IJSONImporterDiffordRepository_
+public class JsonImporterDiffordRepository : IJsonImporterDiffordRepository
 {
     public IList<DiffordCocktailRecipe> readFromFile(string path)
     {
@@ -12,7 +12,7 @@ public class IjsonImporterDiffordRepository : IJSONImporterDiffordRepository_
         {
             string json = File.ReadAllText(path);
             IList<DiffordCocktailRecipe>? cocktails = JsonConvert.DeserializeObject<IList<DiffordCocktailRecipe>>(json);
-
+            
             return cocktails ?? new List<DiffordCocktailRecipe>();
         }
         catch (Exception ex)

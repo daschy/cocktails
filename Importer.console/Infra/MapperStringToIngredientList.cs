@@ -8,21 +8,21 @@ public class MapperStringToIngredientList
     public static List<DIngredient> ParseIngredients(string input)
     {
         var ingredients = new List<DIngredient>();
-        var unitMappings = new Dictionary<string, Unit>
+        var unitMappings = new Dictionary<string, DUnit>
         {
-            { "shot", Unit.shot },
-            { "ml", Unit.ml },
-            { "oz", Unit.oz },
-            { "cl", Unit.cl },
-            { "fresh", Unit.leaf },
-            { "leaf", Unit.leaf },
-            { "leaves", Unit.leaf },
-            { "barspoon", Unit.tsp },
+            { "shot", DUnit.shot },
+            { "ml", DUnit.ml },
+            { "oz", DUnit.oz },
+            { "cl", DUnit.cl },
+            { "fresh", DUnit.leaf },
+            { "leaf", DUnit.leaf },
+            { "leaves", DUnit.leaf },
+            { "barspoon", DUnit.tsp },
         };
-        var lines = input.Split("\\n");
+        var lines = input.Split("\n");
         foreach (var line in lines)
         {
-            var parts = line.Split("\\t");
+            var parts = line.Split("\t");
             if (parts.Length >= 2)
             {
                 var quantityAndUnitText = parts[0].Trim();
@@ -35,7 +35,7 @@ public class MapperStringToIngredientList
                     : string.Empty;
                 float quantity = quantityText.Contains("⁄") ? FractionToFloat(quantityText) : float.Parse(quantityText);
 
-                var unit = Unit.none;
+                var unit = DUnit.none;
                 foreach (var unitMapping in unitMappings)
                 {
                     if (unitText.ToLower().Contains(unitMapping.Key))
@@ -53,35 +53,7 @@ public class MapperStringToIngredientList
 
         return ingredients;
     }
-
-    public static IEnumerable<DIngredient> Map(string input)
-    {
-        var ingredients = new List<DIngredient>();
-        var unitMappings = new Dictionary<string, Unit>
-        {
-            { "shot", Unit.shot },
-            { "ml", Unit.ml },
-            { "oz", Unit.oz },
-            { "cl", Unit.cl },
-            { "leaves", Unit.leaf },
-            { "leaf", Unit.leaf }
-        };
-
-        var lines = input.Split("\n");
-        foreach (var line in lines)
-        {
-            // var ingredient = parseLine(line);
-        }
-
-        return ingredients;
-    }
-
-    // private static Ingredient parseLine(string line)
-    // {
-    //     var part = line.Split("\t");
-    //     return new Ingredient()
-    // }
-
+    
     private static float FractionToFloat(string fraction)
     {
         var parts = fraction.Split('⁄');
