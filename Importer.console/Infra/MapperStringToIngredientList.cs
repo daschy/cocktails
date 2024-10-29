@@ -1,59 +1,82 @@
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Importer.console.Domain;
+using Microsoft.VisualBasic.CompilerServices;
 
 namespace Importer.console.Infra;
 
 public class MapperStringToIngredientList
 {
-    public static List<DIngredient> ParseIngredients(string input)
+    public static DIngredient[] ParseIngredients(string input, string? recipeName)
     {
-        var ingredients = new List<DIngredient>();
-        var unitMappings = new Dictionary<string, DUnit>
+        try
         {
-            { "shot", DUnit.shot },
-            { "ml", DUnit.ml },
-            { "oz", DUnit.oz },
-            { "cl", DUnit.cl },
-            { "fresh", DUnit.leaf },
-            { "leaf", DUnit.leaf },
-            { "leaves", DUnit.leaf },
-            { "barspoon", DUnit.tsp },
-        };
-        var lines = input.Split("\n");
-        foreach (var line in lines)
-        {
-            var parts = line.Split("\t");
-            if (parts.Length >= 2)
+            var ingredients = new List<DIngredient>();
+            var unitMappings = new Dictionary<string, DUnit>
             {
-                var quantityAndUnitText = parts[0].Trim();
-                var quantityText = quantityAndUnitText.Split(" ")[0];
-                var unitText = quantityAndUnitText.Split(" ")[1];
-                var nameAndNotesText = parts[1].Trim();
-                var nameText = nameAndNotesText.Split(" (")[0];
-                var notes = nameAndNotesText.Split(" (").Length > 1
-                    ? nameAndNotesText.Split(" (")[1].Trim(')')
-                    : string.Empty;
-                float quantity = quantityText.Contains("⁄") ? FractionToFloat(quantityText) : float.Parse(quantityText);
-
-                var unit = DUnit.none;
-                foreach (var unitMapping in unitMappings)
+                { "shot", DUnit.shot },
+                { "ml", DUnit.ml },
+                { "oz", DUnit.oz },
+                { "cl", DUnit.cl },
+                { "fresh", DUnit.leaf },
+                { "leaf", DUnit.leaf },
+                { "leaves", DUnit.leaf },
+                { "barspoon", DUnit.tsp },
+                { "top up with", DUnit.top_up_with },
+            };
+            var lines = input.Split("\n");
+            foreach (var line in lines)
+            {
+                var parts = line.Split("\t");
+                if (parts.Length >= 2)
                 {
-                    if (unitText.ToLower().Contains(unitMapping.Key))
+                    var quantityAndUnitText = parts[0].Trim();
+                    string quantityText;
+                    string unitText;
+                    if (quantityAndUnitText.Contains("Top up with"))
                     {
-                        unit = unitMapping.Value;
-                        unitText = unitText.Replace(unitMapping.Key, "").Trim();
-                        break;
+                        quantityText = "4";
+                        unitText = "shot";
                     }
+                    else
+                    {
+                        quantityText = quantityAndUnitText.Split(" ")[0];
+                        unitText = quantityAndUnitText.Split(" ")[1];
+                    }
+                    var nameAndNotesText = parts[1].Trim();
+                    var nameText = nameAndNotesText.Split(" (")[0];
+                    var notes = nameAndNotesText.Split(" (").Length > 1
+                        ? nameAndNotesText.Split(" (")[1].Trim(')')
+                        : string.Empty;
+                    float quantity = quantityText.Contains("⁄")
+                        ? FractionToFloat(quantityText)
+                        : float.Parse(quantityText);
+
+                    var unit = DUnit.none;
+                    foreach (var unitMapping in unitMappings)
+                    {
+                        if (unitText.ToLower().Contains(unitMapping.Key))
+                        {
+                            unit = unitMapping.Value;
+                            unitText = unitText.Replace(unitMapping.Key, "").Trim();
+                            break;
+                        }
+                    }
+
+                    var ingredient = new DIngredient(nameText, quantity, unit, notes);
+                    ingredients.Add(ingredient);
                 }
-
-                var ingredient = new DIngredient(nameText, quantity, unit, notes);
-                ingredients.Add(ingredient);
             }
-        }
 
-        return ingredients;
+            return ingredients.ToArray();
+        }
+        catch (Exception ex)
+        {
+            Debug.Print($"Failed to parse ingredient list for {recipeName}");
+            throw;
+        }
     }
-    
+
     private static float FractionToFloat(string fraction)
     {
         var parts = fraction.Split('⁄');

@@ -5,4 +5,6 @@ namespace Importer.console.Infra;
 public interface IJsonImporterDiffordRepository
 {
     IList<DiffordCocktailRecipe> readFromFile(string path);
+
+    void writeToFile(IList<DiffordCocktailRecipe> data, string path);
 }

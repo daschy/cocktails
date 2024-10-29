@@ -16,6 +16,13 @@
 
     <ItemGroup>
       <Folder Include="App\" />
+      <Folder Include="data\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="data\difford\details_cocktails_all.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

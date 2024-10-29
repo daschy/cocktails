@@ -30,6 +30,14 @@ public class TestImportRecipe
     }
 
     [Test]
+    public void test_match_ingredient()
+    {
+        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
+        barRepo.Authenticate("test@test.com", "123454");
+        Assert.True(barRepo.IsAuthenticated());
+    }
+
+    [Test]
     public void test_login()
     {
         IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
@@ -38,36 +46,18 @@ public class TestImportRecipe
     }
 
     [Test]
-    public void test_import_recipe()
+    public void test_scrape_recipe()
     {
+        var diffordRepository = new JsonImporterDiffordRepository();
         IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
         barRepo.Authenticate(_validUserEmail, _validPassword);
-        var diffordRepository = new JsonImporterDiffordRepository();
         var recipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
         foreach (var diffordCocktailRecipe in recipeList)
         {
             CocktailRecipeDraft02 recipe = barRepo.ScrapeDraftCocktailRecipe("http://server.com/12314", 1, 1);
-            
-            DCocktail mergedRecipe = barRepo.MergeDraftAndDiffordData(
-                recipe,
-                diffordData: diffordCocktailRecipe
-            );
-            
-            DCocktail mergedRecipe = barRepo.ImportNewOrOverrideRecipe((
-                recipe,
-                diffordData: diffordCocktailRecipe
-            );
-            
-           
-            
-            Assert.That(mergedRecipe.Instructions, Is.EqualTo(diffordCocktailRecipe.Preparation));
-            foreach (var (ingredient, i) in mergedRecipe.Ingredients.Select((v, i) => (v, i)))
-            {
-                Assert.That(ingredient.Note, Is.EqualTo(diffordCocktailRecipe.Ingredients));
-                
-            }
         }
     }
+
 
     private void SetupApis()
     {

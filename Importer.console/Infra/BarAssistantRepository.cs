@@ -31,6 +31,11 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         }
     }
 
+    public bool IsAuthenticated()
+    {
+        return !string.IsNullOrEmpty(_accessToken);
+    }
+
     public CocktailRecipeDraft02 ScrapeDraftCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
     {
         if (!IsAuthenticated())
@@ -56,19 +61,8 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         }
     }
 
-    public DCocktail MergeDraftAndDiffordData(CocktailRecipeDraft02 recipe,
-        DiffordCocktailRecipe diffordData)
+    public List<MatchedIngredients> MatchIngredient(string httpServerCom, int barId, int barAssistantBarId)
     {
-        if (!IsAuthenticated())
-        {
-            throw new ConstraintException("Token is empty");
-        }
-        
         throw new NotImplementedException();
-    }
-
-    public bool IsAuthenticated()
-    {
-        return !string.IsNullOrEmpty(_accessToken);
     }
 }

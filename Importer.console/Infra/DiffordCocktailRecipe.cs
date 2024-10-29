@@ -14,6 +14,6 @@ public record DiffordCocktailRecipe(
     string Link
 )
 {
-    private ICollection<DIngredient> IngredientList { get; set; } =
-        MapperStringToIngredientList.ParseIngredients(Ingredients);
+    private DIngredient[] IngredientList { get; set; } =
+        MapperStringToIngredientList.ParseIngredients(Ingredients, Name);
 }
