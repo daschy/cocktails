@@ -46,13 +46,22 @@ public class TestImportRecipe
         var recipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
         foreach (var diffordCocktailRecipe in recipeList)
         {
-            DCocktailDraft recipeDraft = barRepo.ScrapeDraftCocktailRecipe("http://server.com/12314", 1, 1);
-            DCocktail importedRecipe = barRepo.ImportCocktailRecipe(
-                recipeDraft,
-                additionalData: diffordCocktailRecipe
+            CocktailRecipeDraft02 recipe = barRepo.ScrapeDraftCocktailRecipe("http://server.com/12314", 1, 1);
+            
+            DCocktail mergedRecipe = barRepo.MergeDraftAndDiffordData(
+                recipe,
+                diffordData: diffordCocktailRecipe
             );
-            Assert.That(importedRecipe.Instructions, Is.EqualTo(diffordCocktailRecipe.Preparation));
-            foreach (var (ingredient, i) in importedRecipe.Ingredients.Select((v, i) => (v, i)))
+            
+            DCocktail mergedRecipe = barRepo.ImportNewOrOverrideRecipe((
+                recipe,
+                diffordData: diffordCocktailRecipe
+            );
+            
+           
+            
+            Assert.That(mergedRecipe.Instructions, Is.EqualTo(diffordCocktailRecipe.Preparation));
+            foreach (var (ingredient, i) in mergedRecipe.Ingredients.Select((v, i) => (v, i)))
             {
                 Assert.That(ingredient.Note, Is.EqualTo(diffordCocktailRecipe.Ingredients));
                 

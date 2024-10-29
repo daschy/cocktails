@@ -31,9 +31,9 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         }
     }
 
-    public DCocktailDraft ScrapeDraftCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
+    public CocktailRecipeDraft02 ScrapeDraftCocktailRecipe(string recipeUrl, int barId, int barAssistantBarId)
     {
-        if (IsAuthenticated())
+        if (!IsAuthenticated())
         {
             throw new ConstraintException("Token is empty");
         }
@@ -42,10 +42,10 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         try
         {
             // Scrape a recipe
-            ScrapeRecipe200Response result =
+            ScrapeRecipe200Response scrapedRecipe =
                 importApi.ScrapeRecipe(scrapeRecipeRequest, barId, barAssistantBarId);
-            Debug.WriteLine(result);
-            return (DCocktailDraft)result.Data.Schema;
+            Debug.WriteLine(scrapedRecipe);
+            return scrapedRecipe.Data.Schema;
         }
         catch (ApiException e)
         {
@@ -56,15 +56,14 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         }
     }
 
-    public DCocktail ImportCocktailRecipe(DCocktailDraft recipeDraft,
-        DiffordCocktailRecipe additionalData)
+    public DCocktail MergeDraftAndDiffordData(CocktailRecipeDraft02 recipe,
+        DiffordCocktailRecipe diffordData)
     {
-        if (IsAuthenticated())
+        if (!IsAuthenticated())
         {
             throw new ConstraintException("Token is empty");
         }
-
-
+        
         throw new NotImplementedException();
     }
 
