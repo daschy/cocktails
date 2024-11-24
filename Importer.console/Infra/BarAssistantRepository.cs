@@ -8,7 +8,8 @@ using Infra.BarAssistant.Gen.Model;
 
 namespace Importer.console.Infra;
 
-public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi importApi) : IBarAssistantRepository
+public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi importApi, IIngredientsApi ingredientsApi)
+    : IBarAssistantRepository
 {
     private string? _accessToken;
 
@@ -61,7 +62,14 @@ public class BarAssistantRepository(IAuthenticationApi authApi, IImportApi impor
         }
     }
 
-    public List<MatchedIngredients> MatchIngredient(string httpServerCom, int barId, int barAssistantBarId)
+    public DCocktail RecipeWithMatchedIngredientAndInfo(CocktailRecipeDraft02 scrapedRecipe,
+        IList<Ingredient> barIngredients,
+        DiffordCocktailRecipe diffordRecipe)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IList<Ingredient> GetIngredientList()
     {
         throw new NotImplementedException();
     }

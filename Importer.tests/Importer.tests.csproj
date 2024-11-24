@@ -33,6 +33,9 @@
         <None Update="data\bar_mojito-cocktail.json">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <None Update="data\get_ingredient_list_response_200.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

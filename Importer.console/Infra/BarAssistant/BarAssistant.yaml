@@ -3264,7 +3264,7 @@ paths:
       tags:
         - Ingredients
       summary: Show a list of ingredients
-      operationId: 1638cf5bb5113e3ca4793347b9ca84ed
+      operationId: GetIngredientList
       parameters:
         - name: bar_id
           in: query
@@ -7386,7 +7386,7 @@ components:
             - $ref: '#/components/schemas/UserBasic'
             - type: 'null'
         access:
-          type: array
+          type: object
           items:
             properties:
               can_edit:

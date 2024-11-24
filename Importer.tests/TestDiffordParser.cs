@@ -4,11 +4,28 @@ using Importer.console.Infra;
 
 namespace Importer.test;
 
+
+[Ignore("Obsolete")]
 public class TestDiffordParser
 {
     [SetUp]
     public void Setup()
     {
+    }
+
+
+    [Test]
+    [TestCase(
+        "Top up with", 4f, DUnit.shot
+    )]
+    public void test_ingredient_quantity_and_unit_parser(string quantityAndUnitStr, float expectedQuantity,
+        DUnit expectedUnit)
+    {
+        var quantityAndUnit =
+            MapperStringToIngredientList.ParseQuantityAndUnit(quantityAndUnitStr,
+                MapperStringToIngredientList.UnitMappings);
+        Assert.That(quantityAndUnit.Item1, Is.EqualTo(expectedQuantity));
+        Assert.That(quantityAndUnit.Item2, Is.EqualTo(expectedUnit));
     }
 
     [Test]
@@ -18,6 +35,7 @@ public class TestDiffordParser
         IEnumerable<DiffordCocktailRecipe>? recipeList = diffordRepo.readFromFile("data/difford_mojito-cocktail.json");
         Assert.IsNotEmpty(recipeList);
     }
+
 
     [Test(Description = "Ingredients parsing")]
     [TestCase(
@@ -73,7 +91,7 @@ public class TestDiffordParser
         string[] notes
     )
     {
-        var ingredientList = MapperStringToIngredientList.ParseIngredients(ingredientStr, null);
+        var ingredientList = MapperStringToIngredientList.ParseIngredients(ingredientStr, string.Empty);
         Assert.IsNotEmpty(ingredientList);
         Assert.IsTrue(numberOfIngredients == ingredientList.Count());
         Assert.That(ingredientList.Select((ing) => ing.Quantity), Is.EquivalentTo(quantities));

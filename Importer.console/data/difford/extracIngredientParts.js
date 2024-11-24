@@ -10,27 +10,27 @@ function readFileAndExtractQuantity(file) {
         const ingredientSet = new Set();
         const glassSet = new Set();
         jsonData.forEach(recipe => {
-            const quantityAndUnitPartList = recipe.ingredients.split('\n')
-                .map(parts => parts.split('\t')[0])
+            const quantityAndUnitPartList = `${recipe.ingredients}`.split('\n')
+                .map(parts => `${parts}`.split('\t')[0])
 
             quantityAndUnitPartList
-                .map(quantityAndUnit => quantityAndUnit.split(" ").slice(-1))
-                .forEach(unit => unitSet.add(unit[0].toLowerCase().trim()));
+                .map(quantityAndUnit => `${quantityAndUnit}`.split(" ").slice(-1))
+                .forEach(unit => unitSet.add(`${unit[0]}`.toLowerCase().trim()));
 
             quantityAndUnitPartList
-                .map(quantityAndUnit => quantityAndUnit.split(" ").slice(0, -1))
-                .forEach(quantity => quantitySet.add(quantity.join(" ").toLowerCase().trim()));
+                .map(quantityAndUnit => `${quantityAndUnit}`.split(" ").slice(0, -1))
+                .forEach(quantity => quantitySet.add(`${quantity.join(" ")}`.toLowerCase().trim()));
 
             quantityAndUnitPartList
-                .forEach(quantityAndUnit => quantityAndUnitSet.add(quantityAndUnit.toLowerCase().trim()));
+                .forEach(quantityAndUnit => quantityAndUnitSet.add(`${quantityAndUnit}`.toLowerCase().trim()));
 
-            const recipeIngredientList = recipe.ingredients.split('\n')
-                .map(parts => parts.split('\t')[1])
+            const recipeIngredientList = `${recipe.ingredients}`.split('\n')
+                .map(parts => `${parts}`.split('\t')[1])
                 .map(parts => `${parts}`.split('(')[0])
             recipeIngredientList
-                .forEach(ingr => ingredientSet.add(ingr.toLowerCase().trim()));
+                .forEach(ingr => ingredientSet.add(`${ingr}`.toLowerCase().trim()));
 
-            glassSet.add(recipe.glass.toLowerCase().trim());
+            glassSet.add(`${recipe.glass}`.toLowerCase().trim());
 
         })
         const quantityAndUnitSetJson = JSON.stringify(Array.from(quantityAndUnitSet).sort(), null, 3);
@@ -49,4 +49,4 @@ function readFileAndExtractQuantity(file) {
 }
 
 
-readFileAndExtractQuantity("./details_cocktails_all.json")
+readFileAndExtractQuantity("./details_cocktails_all_ml.json")

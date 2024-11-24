@@ -19,6 +19,7 @@ public class TestImportRecipe
     private string _validBasePath;
     private Mock<IAuthenticationApi> _mockAuthApiOk;
     private Mock<IImportApi> _mockImportApiOk;
+    private Mock<IIngredientsApi> _mockIngredientApiOk;
 
     [SetUp]
     public void Setup()
@@ -30,17 +31,10 @@ public class TestImportRecipe
     }
 
     [Test]
-    public void test_match_ingredient()
-    {
-        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
-        barRepo.Authenticate("test@test.com", "123454");
-        Assert.True(barRepo.IsAuthenticated());
-    }
-
-    [Test]
     public void test_login()
     {
-        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
+        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object,
+            _mockIngredientApiOk.Object);
         barRepo.Authenticate("test@test.com", "123454");
         Assert.True(barRepo.IsAuthenticated());
     }
@@ -49,13 +43,16 @@ public class TestImportRecipe
     public void test_scrape_recipe()
     {
         var diffordRepository = new JsonImporterDiffordRepository();
-        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object);
+        IBarAssistantRepository barRepo = new BarAssistantRepository(_mockAuthApiOk.Object, _mockImportApiOk.Object,
+            _mockIngredientApiOk.Object);
         barRepo.Authenticate(_validUserEmail, _validPassword);
-        var recipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
-        foreach (var diffordCocktailRecipe in recipeList)
-        {
-            CocktailRecipeDraft02 recipe = barRepo.ScrapeDraftCocktailRecipe("http://server.com/12314", 1, 1);
-        }
+        var diffordScrapedRecipeList = diffordRepository.readFromFile("data/difford_mojito-cocktail.json");
+        IList<Ingredient> ingredientList = barRepo.GetIngredientList();
+
+        CocktailRecipeDraft02 barScrapedRecipe =
+            barRepo.ScrapeDraftCocktailRecipe(diffordScrapedRecipeList[0].Link, 1, 1);
+        DCocktail dRecipe =
+            barRepo.RecipeWithMatchedIngredientAndInfo(barScrapedRecipe, ingredientList, diffordScrapedRecipeList[0]);
     }
 
 
@@ -85,5 +82,27 @@ public class TestImportRecipe
                 It.IsAny<int>()
             )
         ).Returns(() => scrapedCocktailResponse);
+
+        var importedIngredientListResponse = File.ReadAllText("data/get_ingredient_list_response_200.json");
+        var importedIngredientListResponseObj =
+            JsonConvert.DeserializeObject<GetIngredientList200Response>(importedIngredientListResponse,
+                new JsonSerializerSettings
+                {
+                }) ??
+            new GetIngredientList200Response();
+
+        _mockIngredientApiOk = new Mock<IIngredientsApi>();
+        _mockIngredientApiOk.Setup(
+            c => c.GetIngredientList(
+                It.IsAny<int?>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<int>(),
+                It.IsAny<GetIngredientListFilterParameter>(),
+                It.IsAny<string?>(),
+                It.IsAny<string?>(),
+                It.IsAny<int>()
+            )
+        ).Returns(() => importedIngredientListResponseObj);
     }
 }

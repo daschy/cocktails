@@ -3,6 +3,7 @@ namespace Importer.console.Domain;
 public enum DUnit
 {
     none,
+    unit,
     oz,
     ml,
     dash,
@@ -34,5 +35,5 @@ public enum DUnit
     rinse,
     floated,
     rim,
-    top_up_with,
+    cube,
 }
