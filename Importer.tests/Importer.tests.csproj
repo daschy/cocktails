@@ -13,6 +13,7 @@
     <ItemGroup>
         <PackageReference Include="coverlet.collector" Version="6.0.0"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+        <PackageReference Include="Moq" Version="4.20.72"/>
         <PackageReference Include="NUnit" Version="3.14.0"/>
         <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
         <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
@@ -23,17 +24,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="data\difford\.DS_Store" />
+        <ProjectReference Include="..\Importer.console\Importer.console.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Importer.console\Importer.console.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Update="data\difford_cocktail_mojito.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Include="data\difford_mojito-cocktail.json" CopyToOutputDirectory="Always"/>
+        <None Update="data\scraped_mojito-cocktail.json" CopyToOutputDirectory="Always"/>
+        <None Update="data\bar_mojito-cocktail.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="data\get_ingredient_list_response_200.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

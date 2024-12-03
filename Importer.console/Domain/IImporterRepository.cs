@@ -1,6 +1,8 @@
+using Infra.BarAssistant.Gen.Model;
+
 namespace Importer.console.Domain;
 
 public interface IImporterRepository
 {
-    public IList<CocktailRecipe> readFromFile(string path);
+    public IList<Cocktail> readFromFile(string path);
 }

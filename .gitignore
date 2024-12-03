@@ -135,6 +135,8 @@ $tf/
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
+*.sln.DotSettings
+
 
 # TeamCity is a build add-in
 _TeamCity*
@@ -402,4 +404,5 @@ FodyWeavers.xsd
 
 
 .DS_Store
+gen/
 # End of https://www.toptal.com/developers/gitignore/api/csharp
